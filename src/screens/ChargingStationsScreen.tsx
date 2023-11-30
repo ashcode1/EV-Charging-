@@ -21,6 +21,9 @@ import SlideUpModal from '../components/SlideUpModal';
 import { ScreenName } from '../types/ScreenName';
 import ListEmptyComponent from '../components/ListEmptyComponent';
 import RenderStationItem from '../components/RenderStationItem';
+import TitleText from '../components/TitleText';
+import Spacer from '../components/Spacer';
+import ActionButton from '../components/ActionButton';
 
 type ChargingStationsScreenNavigationProp = StackNavigationProp<
   RootStackParamList,
@@ -124,9 +127,12 @@ const ChargingStationsScreen: React.FC<ChargingStationsScreenProps> = ({
         isVisible={modalVisible}
         onClose={() => setModalVisible(false)}>
         <View style={styles.modalContent}>
-          <Text>{selectedStation?.AddressInfo.Title}</Text>
-          <Text>Address: {selectedStation?.AddressInfo.AddressLine1}</Text>
-          <Button title="Start Charging" onPress={handleStartCharging} />
+          <View style={styles.modalTextContainer}>
+            <TitleText title={selectedStation?.AddressInfo.Title} />
+            <Spacer />
+            <Text>Address: {selectedStation?.AddressInfo.AddressLine1}</Text>
+          </View>
+          <ActionButton title="Start Charging" onPress={handleStartCharging} />
         </View>
       </SlideUpModal>
     </View>
@@ -152,6 +158,10 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'flex-start',
+  },
+  modalTextContainer: {
+    padding: 50,
+    alignItems: 'center',
   },
 });
 
