@@ -1,4 +1,4 @@
-import {createApi, fetchBaseQuery} from '@reduxjs/toolkit/query/react';
+import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 
 interface StartChargingPayload {
   user: number;
@@ -14,7 +14,7 @@ const MAPS_KEY = 'b005be98-c21a-4607-b5a3-832e3a993ad3';
 
 export const chargingStationApi = createApi({
   reducerPath: 'chargingStationApi',
-  baseQuery: fetchBaseQuery({baseUrl: 'https://example.ev.energy/'}),
+  baseQuery: fetchBaseQuery({ baseUrl: 'https://example.ev.energy/' }),
   endpoints: builder => ({
     startChargingSession: builder.mutation<
       StartChargingResponse,
@@ -33,5 +33,5 @@ export const chargingStationApi = createApi({
   }),
 });
 
-export const {useStartChargingSessionMutation, useGetChargingStationsQuery} =
+export const { useStartChargingSessionMutation, useGetChargingStationsQuery } =
   chargingStationApi;

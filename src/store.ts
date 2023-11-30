@@ -1,6 +1,6 @@
-import {configureStore} from '@reduxjs/toolkit';
+import { configureStore } from '@reduxjs/toolkit';
 
-import {chargingStationApi} from './services/chargingStationApi';
+import { chargingStationApi } from './services/chargingStationApi';
 
 const middlewares = [chargingStationApi.middleware];
 

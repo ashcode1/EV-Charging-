@@ -7,13 +7,13 @@ import {
   StyleSheet,
   ActivityIndicator,
 } from 'react-native';
-import {useGetChargingStationsQuery} from '../services/chargingStationApi';
-import {StationType} from '../types/StationType';
+import { useGetChargingStationsQuery } from '../services/chargingStationApi';
+import { StationType } from '../types/StationType';
 
-import {BG_PRIMARY, BRAND_PRIMARY} from '../theme/colors';
+import { BG_PRIMARY, BRAND_PRIMARY } from '../theme/colors';
 
 const ChargingStationsScreen: React.FC = () => {
-  const {data, isError, isLoading} = useGetChargingStationsQuery({});
+  const { data, isError, isLoading } = useGetChargingStationsQuery({});
 
   const handleSelectStation = (station: StationType) => {
     console.log('Station: ', station);
@@ -40,7 +40,7 @@ const ChargingStationsScreen: React.FC = () => {
       contentContainerStyle={styles.contentContainer}
       data={data}
       keyExtractor={item => item.ID.toString()}
-      renderItem={({item}) => (
+      renderItem={({ item }) => (
         <TouchableOpacity onPress={() => handleSelectStation(item)}>
           <Text>{item.AddressInfo.Title}</Text>
         </TouchableOpacity>
