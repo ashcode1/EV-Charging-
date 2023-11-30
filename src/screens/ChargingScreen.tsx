@@ -5,6 +5,8 @@ import { RouteProp } from '@react-navigation/native';
 import { RootStackParamList } from '../navigation/AppNavigator';
 import { BG_PRIMARY } from '../theme/colors';
 import { ScreenName } from '../types/ScreenName';
+import AnimatedCircle from '../components/AnimatedCircle';
+import TitleText from '../components/TitleText';
 
 type ChargingScreenRouteProp = RouteProp<
   RootStackParamList,
@@ -20,8 +22,9 @@ const ChargingScreen: React.FC<ChargingScreenProps> = ({ route }) => {
 
   return (
     <View style={styles.container}>
-      <Text>{station.AddressInfo.Title}</Text>
-      <Text>Charging...</Text>
+      <TitleText title={station.AddressInfo.Title} />
+      <AnimatedCircle />
+      <TitleText title="Charging..." />
     </View>
   );
 };
