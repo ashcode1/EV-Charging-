@@ -7,6 +7,7 @@ import {
   StyleSheet,
   ActivityIndicator,
   Button,
+  RefreshControl,
 } from 'react-native';
 import { StackNavigationProp } from '@react-navigation/stack';
 
@@ -35,7 +36,8 @@ const ChargingStationsScreen: React.FC<ChargingStationsScreenProps> = ({
   const [modalVisible, setModalVisible] = React.useState<boolean>(false);
   const [selectedStation, setSelectedStation] =
     React.useState<StationType | null>(null);
-  const { data, isError, isLoading } = useGetChargingStationsQuery({});
+  const { data, isError, isLoading, isFetching, refetch } =
+    useGetChargingStationsQuery({});
   const [startChargingSession] = useStartChargingSessionMutation();
 
   const handleSelectStation = (station: StationType) => {
@@ -107,6 +109,16 @@ const ChargingStationsScreen: React.FC<ChargingStationsScreenProps> = ({
             <Text>{item.AddressInfo.Title}</Text>
           </TouchableOpacity>
         )}
+        refreshControl={
+          <RefreshControl
+            refreshing={isFetching}
+            onRefresh={refetch}
+            // iOS only
+            tintColor={BRAND_PRIMARY}
+            // Android only
+            colors={[BRAND_PRIMARY]}
+          />
+        }
       />
       <SlideUpModal
         isVisible={modalVisible}
