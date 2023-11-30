@@ -8,7 +8,9 @@ import {
   ActivityIndicator,
   Button,
 } from 'react-native';
+import { StackNavigationProp } from '@react-navigation/stack';
 
+import { RootStackParamList } from '../navigation/AppNavigator';
 import {
   useGetChargingStationsQuery,
   useStartChargingSessionMutation,
@@ -16,8 +18,20 @@ import {
 import { StationType } from '../types/StationType';
 import { BG_PRIMARY, BRAND_PRIMARY } from '../theme/colors';
 import SlideUpModal from '../components/SlideUpModal';
+import { ScreenName } from '../types/ScreenName';
 
-const ChargingStationsScreen: React.FC = () => {
+type ChargingStationsScreenNavigationProp = StackNavigationProp<
+  RootStackParamList,
+  'ChargingStations'
+>;
+
+type ChargingStationsScreenProps = {
+  navigation: ChargingStationsScreenNavigationProp;
+};
+
+const ChargingStationsScreen: React.FC<ChargingStationsScreenProps> = ({
+  navigation,
+}) => {
   const [modalVisible, setModalVisible] = React.useState<boolean>(false);
   const [selectedStation, setSelectedStation] =
     React.useState<StationType | null>(null);
@@ -32,6 +46,14 @@ const ChargingStationsScreen: React.FC = () => {
   };
 
   const handleStartCharging = () => {
+    const onSuccess = () => {
+      setModalVisible(false);
+      selectedStation &&
+        navigation.navigate(ScreenName.CHARGING_SCREEN, {
+          station: selectedStation,
+        });
+    };
+
     const reqStartChargingSession = async () => {
       const chargerId = selectedStation?.ID;
       try {
@@ -43,10 +65,14 @@ const ChargingStationsScreen: React.FC = () => {
         const response = await startChargingSession(payload).unwrap();
         console.log('response: ', response);
         // TODO Handle the response
+        // onSuccess();
       } catch (err) {
         // TODO Handle the error
         console.log('error: ', err);
       }
+
+      // Fake success
+      onSuccess();
     };
 
     reqStartChargingSession();
@@ -69,7 +95,7 @@ const ChargingStationsScreen: React.FC = () => {
   }
 
   return (
-    <View>
+    <View style={styles.container}>
       <FlatList
         contentContainerStyle={styles.contentContainer}
         data={data}
@@ -94,6 +120,10 @@ const ChargingStationsScreen: React.FC = () => {
 };
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: BG_PRIMARY,
+  },
   centeredContainer: {
     flex: 1,
     backgroundColor: BG_PRIMARY,
