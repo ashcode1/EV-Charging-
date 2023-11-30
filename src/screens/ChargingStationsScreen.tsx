@@ -6,17 +6,36 @@ import {
   TouchableOpacity,
   StyleSheet,
   ActivityIndicator,
+  Button,
 } from 'react-native';
+
 import { useGetChargingStationsQuery } from '../services/chargingStationApi';
 import { StationType } from '../types/StationType';
-
 import { BG_PRIMARY, BRAND_PRIMARY } from '../theme/colors';
+import SlideUpModal from '../components/SlideUpModal';
 
 const ChargingStationsScreen: React.FC = () => {
+  const [modalVisible, setModalVisible] = React.useState<boolean>(false);
+  const [selectedStation, setSelectedStation] =
+    React.useState<StationType | null>(null);
   const { data, isError, isLoading } = useGetChargingStationsQuery({});
 
   const handleSelectStation = (station: StationType) => {
+    setSelectedStation(station);
+    setModalVisible(true);
+
     console.log('Station: ', station);
+  };
+
+  const handleStartCharging = () => {
+    const chargerId = selectedStation?.ID;
+
+    const payload = {
+      user: 1,
+      car_id: 1,
+      charger_id: chargerId,
+    };
+    console.log('payload: ', payload);
   };
 
   if (isLoading) {
@@ -36,16 +55,27 @@ const ChargingStationsScreen: React.FC = () => {
   }
 
   return (
-    <FlatList
-      contentContainerStyle={styles.contentContainer}
-      data={data}
-      keyExtractor={item => item.ID.toString()}
-      renderItem={({ item }) => (
-        <TouchableOpacity onPress={() => handleSelectStation(item)}>
-          <Text>{item.AddressInfo.Title}</Text>
-        </TouchableOpacity>
-      )}
-    />
+    <View>
+      <FlatList
+        contentContainerStyle={styles.contentContainer}
+        data={data}
+        keyExtractor={item => item.ID.toString()}
+        renderItem={({ item }) => (
+          <TouchableOpacity onPress={() => handleSelectStation(item)}>
+            <Text>{item.AddressInfo.Title}</Text>
+          </TouchableOpacity>
+        )}
+      />
+      <SlideUpModal
+        isVisible={modalVisible}
+        onClose={() => setModalVisible(false)}>
+        <View style={styles.modalContent}>
+          <Text>{selectedStation?.AddressInfo.Title}</Text>
+          <Text>Address: {selectedStation?.AddressInfo.AddressLine1}</Text>
+          <Button title="Start Charging" onPress={handleStartCharging} />
+        </View>
+      </SlideUpModal>
+    </View>
   );
 };
 
@@ -59,6 +89,11 @@ const styles = StyleSheet.create({
   contentContainer: {
     paddingHorizontal: 10,
     paddingBottom: 20,
+  },
+  modalContent: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'flex-start',
   },
 });
 
