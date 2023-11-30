@@ -3,7 +3,6 @@ import {
   View,
   FlatList,
   Text,
-  TouchableOpacity,
   StyleSheet,
   ActivityIndicator,
   Button,
@@ -17,9 +16,11 @@ import {
   useStartChargingSessionMutation,
 } from '../services/chargingStationApi';
 import { StationType } from '../types/StationType';
-import { BG_PRIMARY, BRAND_PRIMARY, SHADOW } from '../theme/colors';
+import { BG_PRIMARY, BRAND_PRIMARY } from '../theme/colors';
 import SlideUpModal from '../components/SlideUpModal';
 import { ScreenName } from '../types/ScreenName';
+import ListEmptyComponent from '../components/ListEmptyComponent';
+import RenderStationItem from '../components/RenderStationItem';
 
 type ChargingStationsScreenNavigationProp = StackNavigationProp<
   RootStackParamList,
@@ -103,11 +104,7 @@ const ChargingStationsScreen: React.FC<ChargingStationsScreenProps> = ({
         data={data}
         keyExtractor={item => item.ID.toString()}
         renderItem={({ item }) => (
-          <TouchableOpacity
-            onPress={() => handleSelectStation(item)}
-            style={styles.renderItemContainer}>
-            <Text>{item.AddressInfo.Title}</Text>
-          </TouchableOpacity>
+          <RenderStationItem item={item} onSelect={handleSelectStation} />
         )}
         refreshControl={
           <RefreshControl
@@ -118,6 +115,9 @@ const ChargingStationsScreen: React.FC<ChargingStationsScreenProps> = ({
             // Android only
             colors={[BRAND_PRIMARY]}
           />
+        }
+        ListEmptyComponent={
+          <ListEmptyComponent text="No Charging Stations Found" />
         }
       />
       <SlideUpModal
@@ -147,22 +147,6 @@ const styles = StyleSheet.create({
   contentContainer: {
     paddingHorizontal: 10,
     paddingBottom: 20,
-  },
-  renderItemContainer: {
-    height: 70,
-    borderRadius: 5,
-    marginBottom: 10,
-    justifyContent: 'center',
-    paddingLeft: 10,
-    backgroundColor: BG_PRIMARY,
-    shadowColor: SHADOW,
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 3,
   },
   modalContent: {
     flex: 1,
