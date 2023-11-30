@@ -9,7 +9,10 @@ import {
   Button,
 } from 'react-native';
 
-import { useGetChargingStationsQuery } from '../services/chargingStationApi';
+import {
+  useGetChargingStationsQuery,
+  useStartChargingSessionMutation,
+} from '../services/chargingStationApi';
 import { StationType } from '../types/StationType';
 import { BG_PRIMARY, BRAND_PRIMARY } from '../theme/colors';
 import SlideUpModal from '../components/SlideUpModal';
@@ -19,6 +22,7 @@ const ChargingStationsScreen: React.FC = () => {
   const [selectedStation, setSelectedStation] =
     React.useState<StationType | null>(null);
   const { data, isError, isLoading } = useGetChargingStationsQuery({});
+  const [startChargingSession] = useStartChargingSessionMutation();
 
   const handleSelectStation = (station: StationType) => {
     setSelectedStation(station);
@@ -28,14 +32,24 @@ const ChargingStationsScreen: React.FC = () => {
   };
 
   const handleStartCharging = () => {
-    const chargerId = selectedStation?.ID;
-
-    const payload = {
-      user: 1,
-      car_id: 1,
-      charger_id: chargerId,
+    const reqStartChargingSession = async () => {
+      const chargerId = selectedStation?.ID;
+      try {
+        const payload = {
+          user: 1,
+          car_id: 1,
+          charger_id: chargerId,
+        };
+        const response = await startChargingSession(payload).unwrap();
+        console.log('response: ', response);
+        // TODO Handle the response
+      } catch (err) {
+        // TODO Handle the error
+        console.log('error: ', err);
+      }
     };
-    console.log('payload: ', payload);
+
+    reqStartChargingSession();
   };
 
   if (isLoading) {
